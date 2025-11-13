@@ -1,0 +1,279 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700&family=Cinzel:wght@400;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Bookéalo Design System - Premium Peruvian Cevichería
+   Dark ocean theme with warm accents
+   All colors in HSL format */
+
+@layer base {
+  :root {
+    /* Ocean depths - Primary backgrounds */
+    --ocean-dark: 210 65% 10%;        /* #0A1628 - Main background */
+    --ocean-blue: 207 54% 24%;        /* #1E3E59 - Secondary sections */
+    --ocean-surface: 215 35% 14%;     /* #162033 - Card surfaces */
+    
+    /* Warm accents - Peruvian soul */
+    --amber-warm: 38 95% 51%;         /* #F59E0B - Primary CTA */
+    --terracota: 14 78% 63%;          /* #E07856 - Secondary accent */
+    --teal-fresh: 173 80% 40%;        /* #14B8A6 - Fresh seafood */
+    
+    /* Text hierarchy */
+    --text-primary: 0 0% 100%;        /* White - Headlines */
+    --text-secondary: 214 17% 64%;    /* #94A3B8 - Body text */
+    --text-muted: 215 16% 47%;        /* #64748B - Labels */
+    
+    /* UI elements */
+    --border-subtle: 217 30% 17%;     /* #1E293B */
+    --border-default: 215 25% 27%;    /* #334155 */
+    --success: 158 64% 52%;           /* #10B981 - Confirmations */
+    
+    /* Shadcn compatible tokens */
+    --background: 210 65% 10%;
+    --foreground: 0 0% 100%;
+    
+    --card: 215 35% 14%;
+    --card-foreground: 0 0% 100%;
+    
+    --popover: 215 35% 14%;
+    --popover-foreground: 0 0% 100%;
+    
+    --primary: 38 95% 51%;
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 207 54% 24%;
+    --secondary-foreground: 0 0% 100%;
+    
+    --muted: 215 35% 14%;
+    --muted-foreground: 214 17% 64%;
+    
+    --accent: 173 80% 40%;
+    --accent-foreground: 0 0% 100%;
+    
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 217 30% 17%;
+    --input: 215 25% 27%;
+    --ring: 173 80% 40%;
+    
+    --radius: 1rem;
+    
+    /* Gradients */
+    --gradient-ocean: linear-gradient(135deg, hsl(173 80% 40%), hsl(207 54% 24%), hsl(38 95% 51%), hsl(14 78% 63%));
+    --gradient-hero: linear-gradient(180deg, hsl(210 65% 10% / 0.9), hsl(210 65% 10% / 0.4), hsl(210 65% 10% / 0.9));
+    
+    /* Shadows with color */
+    --shadow-teal: 0 20px 60px -15px hsl(173 80% 40% / 0.2);
+    --shadow-amber: 0 20px 60px -15px hsl(38 95% 51% / 0.2);
+    
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-[hsl(var(--ocean-dark))] text-[hsl(var(--text-primary))] antialiased;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+  }
+}
+
+@layer utilities {
+  .font-serif {
+    font-family: 'Playfair Display', serif;
+  }
+  
+  .font-accent {
+    font-family: 'Cinzel', serif;
+  }
+  
+  .text-gradient-ocean {
+    @apply bg-gradient-to-r from-[hsl(173,80%,40%)] via-[hsl(207,54%,24%)] via-[hsl(38,95%,51%)] to-[hsl(14,78%,63%)] bg-clip-text text-transparent;
+  }
+  
+  .glass {
+    @apply bg-white/5 backdrop-blur-xl border border-white/10;
+  }
+  
+  .glass-dark {
+    @apply bg-[hsl(var(--ocean-surface))]/90 backdrop-blur-2xl border border-[hsl(var(--border-subtle))];
+  }
+  
+  .glow-teal {
+    box-shadow: var(--shadow-teal);
+  }
+  
+  .glow-amber {
+    box-shadow: var(--shadow-amber);
+  }
+  
+  .hover-lift {
+    @apply transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl;
+  }
+}
+
+@keyframes scale-in {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-scale-in {
+  animation: scale-in 0.5s ease-out;
+}
+
+@keyframes fade-up {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+@keyframes pulse-subtle {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Splash Screen Animations */
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; pointer-events: none; }
+}
+
+@keyframes scale-up {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.05); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes float-delayed {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-30px); }
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
+}
+
+/* Scroll Animations */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+
+.scroll-reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger Animation */
+.stagger-item {
+  animation: fade-up 0.7s ease-out forwards;
+  opacity: 0;
+}
+
+/* Pulse Subtle */
+.animate-pulse-subtle {
+  animation: pulse-subtle 3s ease-in-out infinite;
+}
+
+/* Shake Animation for Errors */
+.animate-shake {
+  animation: shake 0.3s ease-in-out;
+}
+
+/* Splash Screen Utility Classes */
+.animate-fade-out {
+  animation: fadeOut 500ms ease-out forwards;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.8s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-scale-up { 
+  animation: scale-up 800ms ease-out forwards; 
+}
+
+.animate-pulse-slow { 
+  animation: pulse-slow 3s ease-in-out infinite; 
+}
+
+.animate-float { 
+  animation: float 3s ease-in-out infinite; 
+}
+
+.animate-float-delayed { 
+  animation: float-delayed 3.5s ease-in-out infinite 0.5s; 
+}
+
+.animate-float-slow { 
+  animation: float-slow 4s ease-in-out infinite; 
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}

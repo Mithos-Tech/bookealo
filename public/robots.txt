@@ -1,0 +1,13 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Disallow admin areas (cuando se implemente)
+Disallow: /admin/
+Disallow: /api/
+
+# Crawl-delay
+Crawl-delay: 10
+
+# Sitemap
+Sitemap: https://bookealo.com/sitemap.xml
