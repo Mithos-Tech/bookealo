@@ -1,13 +1,20 @@
 import { Users, MapPin } from "lucide-react";
 import { toast } from "sonner";
 
+// Base URL de Cloudinary (TU cuenta)
+const CLOUDINARY_BASE = 'https://res.cloudinary.com/dkoshgzxo/image/upload';
+
+// Datos de los espacios con las URLs de Cloudinary optimizadas
+// Parámetros Cloudinary usados:
+// c_fill,w_800,h_1200: Recorta y redimensiona a 800x1200 para el card.
+// q_auto,f_auto: Optimización automática de calidad y formato (servirá WebP si es posible).
 const spaces = [
   {
     id: 1,
     name: "Terraza Exterior",
     description: "Vista al jardín con ambiente natural",
     capacity: "2-6 personas",
-    image: "/src/assets/terraza-exterior.jpg",
+    image: `${CLOUDINARY_BASE}/c_fill,w_800,h_1200,q_auto,f_auto/v1763095976/Terraza_Exterior_nbvq0v.jpg`,
     features: ["Exterior", "Vista jardín"],
     type: "terraza"
   },
@@ -16,7 +23,7 @@ const spaces = [
     name: "Barra Principal",
     description: "Vista directa a la cocina",
     capacity: "2-4 personas",
-    image: "/src/assets/barra-principal.jpg",
+    image: `${CLOUDINARY_BASE}/c_fill,w_800,h_1200,q_auto,f_auto/v1763095976/Barra_Principal_zbf50c.png`,
     features: ["Vista cocina", "Casual"],
     type: "barra"
   },
@@ -25,7 +32,7 @@ const spaces = [
     name: "Salón Principal",
     description: "Ambiente elegante e íntimo",
     capacity: "4-8 personas",
-    image: "/src/assets/salon-principal.jpg",
+    image: `${CLOUDINARY_BASE}/c_fill,w_800,h_1200,q_auto,f_auto/v1763095975/Sal%C3%B3n_Principal_vdo1tt.jpg`,
     features: ["Elegante", "Íntimo"],
     type: "salon"
   },
@@ -34,7 +41,7 @@ const spaces = [
     name: "Sala Privada",
     description: "Perfecta para eventos especiales",
     capacity: "6-12 personas",
-    image: "/src/assets/sala-privada.jpg",
+    image: `${CLOUDINARY_BASE}/c_fill,w_800,h_1200,q_auto,f_auto/v1763095975/Sala_Privada_rovwvu.jpg`,
     features: ["Eventos", "Privacidad"],
     type: "privada"
   }
