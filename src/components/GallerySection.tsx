@@ -1,15 +1,51 @@
 import { useState } from "react";
 import { X } from "lucide-react";
 
+// Base URL de Cloudinary (TU cuenta)
+const CLOUDINARY_BASE = 'https://res.cloudinary.com/dkoshgzxo/image/upload';
+
 const galleryImages = [
-  { id: 1, src: "/src/assets/gallery-1.jpg", alt: "Ceviche fresco servido en plato artesanal" },
-  { id: 2, src: "/src/assets/gallery-2.jpg", alt: "Interior del restaurante con iluminación cálida" },
-  { id: 3, src: "/src/assets/gallery-3.jpg", alt: "Tiradito Nikkei con presentación elegante" },
-  { id: 4, src: "/src/assets/gallery-4.jpg", alt: "Barra del restaurante con vista a la cocina" },
-  { id: 5, src: "/src/assets/gallery-5.jpg", alt: "Arroz con mariscos recién preparado" },
-  { id: 6, src: "/src/assets/gallery-6.jpg", alt: "Terraza exterior con ambiente natural" },
-  { id: 7, src: "/src/assets/gallery-7.jpg", alt: "Detalle de copa de vino en mesa" },
-  { id: 8, src: "/src/assets/gallery-8.jpg", alt: "Chef preparando ceviche fresco" },
+  // Usamos el parámetro w_500 para un tamaño adecuado en la galería y lightbox
+  { 
+    id: 1, 
+    src: `${CLOUDINARY_BASE}/w_500,q_auto,f_auto/v1763095974/Ceviche_fresco_servido_en_plato_artesanal_uluhtf.png`, 
+    alt: "Ceviche fresco servido en plato artesanal" 
+  },
+  { 
+    id: 2, 
+    src: `${CLOUDINARY_BASE}/w_500,q_auto,f_auto/v1763095974/Interior_del_restaurante_con_iluminaci%C3%B3n_c%C3%A1lida_d68eek.jpg`, 
+    alt: "Interior del restaurante con iluminación cálida" 
+  },
+  { 
+    id: 3, 
+    src: `${CLOUDINARY_BASE}/w_500,q_auto,f_auto/v1763095974/Tiradito_Nikkei_con_presentaci%C3%B3n_elegante_cs2pod.jpg`, 
+    alt: "Tiradito Nikkei con presentación elegante" 
+  },
+  { 
+    id: 4, 
+    src: `${CLOUDINARY_BASE}/w_500,q_auto,f_auto/v1763095974/Barra_del_restaurante_con_vista_a_la_cocina_n11b1y.jpg`, 
+    alt: "Barra del restaurante con vista a la cocina" 
+  },
+  { 
+    id: 5, 
+    src: `${CLOUDINARY_BASE}/w_500,q_auto,f_auto/v1763095974/Arroz_con_mariscos_reci%C3%A9n_preparado_pqtbrx.png`, 
+    alt: "Arroz con mariscos recién preparado" 
+  },
+  { 
+    id: 6, 
+    src: `${CLOUDINARY_BASE}/w_500,q_auto,f_auto/v1763095974/Terraza_exterior_con_ambiente_natural_tike5m.jpg`, 
+    alt: "Terraza exterior con ambiente natural" 
+  },
+  { 
+    id: 7, 
+    src: `${CLOUDINARY_BASE}/w_500,q_auto,f_auto/v1763095975/Detalle_de_copa_de_vino_en_mesa_zzwqgj.jpg`, 
+    alt: "Detalle de copa de vino en mesa" 
+  },
+  { 
+    id: 8, 
+    src: `${CLOUDINARY_BASE}/w_500,q_auto,f_auto/v1763095974/Chef_preparando_ceviche_fresco_wsgeap.jpg`, 
+    alt: "Chef preparando ceviche fresco" 
+  },
 ];
 
 const GallerySection = () => {
