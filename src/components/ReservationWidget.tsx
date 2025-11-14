@@ -31,10 +31,21 @@ const reservationSchema = z.object({
 
 type ReservationFormData = z.infer<typeof reservationSchema>;
 
+// Nuevo tipo para guardar los detalles de la reserva confirmada
+type ConfirmedDetails = {
+  date: string;
+  time: string;
+  partySize: string;
+  tableType: string | undefined;
+} | null;
+
 const ReservationWidget = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [reservationCode, setReservationCode] = useState("");
+  // NUEVO ESTADO: Guarda los detalles de la reserva que vamos a mostrar
+  const [confirmedReservationDetails, setConfirmedReservationDetails] = useState<ConfirmedDetails>(null);
+
 
   const {
     control,
@@ -55,56 +66,59 @@ const ReservationWidget = () => {
   const watchedValues = watch();
 
   const onSubmit = async (data: ReservationFormData) => {
-  setIsLoading(true);
+    setIsLoading(true);
 
-  try {
-    // LLamada a la API de Supabase
-    const result = await createReservation({
-      // Nota: Tu formulario no incluye name, email, phone.
-      // Si la función createReservation de tu guía lo requiere,
-      // deberás modificar el esquema Zod y el formulario para incluirlos.
-      // Por ahora, usamos solo los campos disponibles:
-      customer_name: 'Invitado', // Placeholder si no tienes campo de nombre
-      customer_email: 'invitado@bookealo.com', // Placeholder
-      customer_phone: '000000000', // Placeholder
-      date: data.date,
-      time: data.time,
-      party_size: parseInt(data.partySize), // Usamos partySize en lugar de guests
-      table_type: data.tableType || 'any',
-      special_requests: '', // Asumimos que no hay campo de notas aún
-    });
-
-    if (result.success && result.data) {
-      // Usar los datos de la respuesta real
-      setReservationCode(result.data.confirmation_code);
-      setShowSuccessModal(true);
-      
-      // Toast de éxito
-      toast.success('¡Reserva confirmada!', {
-        description: `Código: ${result.data.confirmation_code}`
+    try {
+      // LLamada a la API de Supabase
+      const result = await createReservation({
+        // Nota: Tu formulario no incluye name, email, phone.
+        // Si la función createReservation de tu guía lo requiere,
+        // deberás modificar el esquema Zod y el formulario para incluirlos.
+        // Por ahora, usamos solo los campos disponibles:
+        customer_name: 'Invitado', // Placeholder si no tienes campo de nombre
+        customer_email: 'invitado@bookealo.com', // Placeholder
+        customer_phone: '000000000', // Placeholder
+        date: data.date,
+        time: data.time,
+        party_size: parseInt(data.partySize), // Usamos partySize en lugar de guests
+        table_type: data.tableType || 'any',
+        special_requests: '', // Asumimos que no hay campo de notas aún
       });
 
-      // Resetear formulario
-      reset();
-    } else {
-      // Error de la API de Supabase
-      toast.error('Error al crear reserva', {
-        description: result.error || 'Intenta nuevamente'
+      if (result.success && result.data) {
+        // 1. GUARDAR DETALLES: Guardamos los detalles de la reserva ANTES de resetear
+        setConfirmedReservationDetails({
+          date: data.date,
+          time: data.time,
+          partySize: data.partySize,
+          tableType: data.tableType,
+        });
+
+        // 2. Usar los datos de la respuesta real
+        setReservationCode(result.data.confirmation_code);
+        setShowSuccessModal(true);
+
+        // 3. Resetear formulario
+        reset();
+      } else {
+        // Error de la API de Supabase
+        toast.error('Error al crear reserva', {
+          description: result.error || 'Intenta nuevamente'
+        });
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error('Error inesperado', {
+        description: 'Por favor, intenta nuevamente'
       });
+    } finally {
+      setIsLoading(false);
     }
-  } catch (error) {
-    console.error('Error:', error);
-    toast.error('Error inesperado', {
-      description: 'Por favor, intenta nuevamente'
-    });
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
 
   const handleCloseModal = () => {
     setShowSuccessModal(false);
-    reset();
+    setConfirmedReservationDetails(null); // Limpiar detalles al cerrar
   };
 
   const handleDownloadPDF = () => {
@@ -130,6 +144,14 @@ const ReservationWidget = () => {
       privado: "Sala Privada",
     };
     return types[type] || "Cualquiera";
+  };
+
+  // Usamos los detalles confirmados si existen, si no, usamos los valores del formulario (solo para el caso de que la reserva falle y se muestre el form)
+  const displayDetails = confirmedReservationDetails || {
+    date: watchedValues.date,
+    time: watchedValues.time,
+    partySize: watchedValues.partySize,
+    tableType: watchedValues.tableType,
   };
 
   return (
@@ -158,9 +180,8 @@ const ReservationWidget = () => {
                           type="date"
                           {...field}
                           min={new Date().toISOString().split('T')[0]}
-                          className={`bg-ocean-blue border-border text-white rounded-xl px-4 py-3 focus:border-amber-warm focus:ring-2 ring-amber-warm/50 ${
-                            errors.date ? "border-red-500 ring-2 ring-red-500" : ""
-                          }`}
+                          className={`bg-ocean-blue border-border text-white rounded-xl px-4 py-3 focus:border-amber-warm focus:ring-2 ring-amber-warm/50 ${errors.date ? "border-red-500 ring-2 ring-red-500" : ""
+                            }`}
                         />
                         {errors.date && (
                           <p className="text-red-400 text-sm mt-1">{errors.date.message}</p>
@@ -182,9 +203,8 @@ const ReservationWidget = () => {
                     render={({ field }) => (
                       <>
                         <Select onValueChange={field.onChange} value={field.value}>
-                          <SelectTrigger className={`bg-ocean-blue border-border text-white rounded-xl px-4 py-3 ${
-                            errors.time ? "border-red-500 ring-2 ring-red-500" : ""
-                          }`}>
+                          <SelectTrigger className={`bg-ocean-blue border-border text-white rounded-xl px-4 py-3 ${errors.time ? "border-red-500 ring-2 ring-red-500" : ""
+                            }`}>
                             <SelectValue placeholder="Seleccionar" />
                           </SelectTrigger>
                           <SelectContent>
@@ -217,9 +237,8 @@ const ReservationWidget = () => {
                     render={({ field }) => (
                       <>
                         <Select onValueChange={field.onChange} value={field.value}>
-                          <SelectTrigger className={`bg-ocean-blue border-border text-white rounded-xl px-4 py-3 ${
-                            errors.partySize ? "border-red-500 ring-2 ring-red-500" : ""
-                          }`}>
+                          <SelectTrigger className={`bg-ocean-blue border-border text-white rounded-xl px-4 py-3 ${errors.partySize ? "border-red-500 ring-2 ring-red-500" : ""
+                            }`}>
                             <SelectValue placeholder="Seleccionar" />
                           </SelectTrigger>
                           <SelectContent>
@@ -336,32 +355,32 @@ const ReservationWidget = () => {
               </div>
             </div>
 
-            {/* Reservation Summary */}
+            {/* Reservation Summary (MODIFICADA AQUÍ) */}
             <div className="bg-gradient-to-br from-gray-100 to-gray-50 rounded-xl p-3 sm:p-4 mb-4 sm:mb-6 space-y-2 sm:space-y-3 border border-gray-200">
               <div className="flex flex-wrap items-center gap-2 text-gray-800 text-sm sm:text-base">
                 <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-teal-600 flex-shrink-0" />
                 <span className="font-semibold">Fecha:</span>
-                <span className="text-gray-700">{watchedValues.date ? new Date(watchedValues.date).toLocaleDateString('es-PE', { 
-                  weekday: 'long', 
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: 'numeric' 
+                <span className="text-gray-700">{displayDetails.date ? new Date(displayDetails.date).toLocaleDateString('es-PE', {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
                 }) : ''}</span>
               </div>
               <div className="flex items-center gap-2 text-gray-800 text-sm sm:text-base">
                 <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-teal-600 flex-shrink-0" />
                 <span className="font-semibold">Hora:</span>
-                <span className="text-gray-700">{watchedValues.time}</span>
+                <span className="text-gray-700">{displayDetails.time}</span>
               </div>
               <div className="flex items-center gap-2 text-gray-800 text-sm sm:text-base">
                 <Users className="w-4 h-4 sm:w-5 sm:h-5 text-teal-600 flex-shrink-0" />
                 <span className="font-semibold">Personas:</span>
-                <span className="text-gray-700">{watchedValues.partySize} {Number(watchedValues.partySize) === 1 ? 'persona' : 'personas'}</span>
+                <span className="text-gray-700">{displayDetails.partySize} {Number(displayDetails.partySize) === 1 ? 'persona' : 'personas'}</span>
               </div>
               <div className="flex items-center gap-2 text-gray-800 text-sm sm:text-base">
                 <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-teal-600 flex-shrink-0" />
                 <span className="font-semibold">Mesa:</span>
-                <span className="text-gray-700">{getTableTypeName(watchedValues.tableType || 'any')}</span>
+                <span className="text-gray-700">{getTableTypeName(displayDetails.tableType || 'any')}</span>
               </div>
             </div>
 
